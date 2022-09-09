@@ -62,7 +62,8 @@ def mk_dict_equal_sizes(result):
             if len(counter) == 1:
                 counter.clear()
             elif sizes_lst.count(itm) == 1:
-                counter.pop(sizes_lst.index(itm))
+                tmp = (list(map(lambda x: x[0], counter))).index(itm)
+                counter.pop(tmp)
         #корректирую результирующий словарь
         if len(counter) == 0:
             #result[k].clear()
@@ -75,8 +76,9 @@ def mk_dict_equal_sizes(result):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     smbl = symbol()
-    sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/home/me/PycharmProjects/EqualFilesNameHash/samples/',
-                '.txt']
+    #sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/home/me/PycharmProjects/EqualFilesNameHash/samples/',
+    #            '.txt']
+    #sys.argv = ['F:\home\me\PycharmProjects\EqualFilesNameHash\main.py', 'D:\SERCEL', '.pdf']
     # получаю список путей файлов
     file_list_dir = mk_file_list()
     name_list = []  # только имена файлов
@@ -92,12 +94,8 @@ if __name__ == '__main__':
     # получить словарь: ключ - имя файла, и полные пути до файлов с одинаковыми именами и размерами
     result = mk_dict_equal_sizes(result)
     print(*result)
-
-
-    # cntr_dict=dict()
-    # cntr_dict.update(counter)
-
-    #print(counter)
-    #print(sizes_lst)
-    # print(sorted(result[keys[0]], key=os.path.getsize))
-    # print(type(result[keys[0]]))
+    # печатаем красиво
+    for k in result.keys():
+        print(k)
+        for n in result[k]:
+            print('\t',n,'\t', os.path.getsize(n))
