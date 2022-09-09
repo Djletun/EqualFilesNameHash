@@ -20,7 +20,7 @@ def symbol():
 def mk_file_list():
     file_list_dir = []
     file_types = sys.argv[-1]
-    print(file_types)
+    # print(file_types)
     for target_path in sys.argv[1:-1]:
         if target_path[-1] != smbl:
             target_path += smbl  # добавляем в конец пути к директории слеш - будет искать во всех подпапках
@@ -48,11 +48,35 @@ def mk_dict_equal_names(unic_name_list, name_list, file_list_dir):
 
     return result
 
+def mk_dict_equal_sizes(result):
+    keys = list(result.keys())
+    for k in keys:
+        counter = list()
+        for file_name in result[k]:
+            counter.append([os.path.getsize(file_name), file_name])
+
+        #print(counter)
+        sizes_lst = list(map(lambda x: x[0], counter))
+        # корректирую список оставляю только одинаковые размеры
+        for itm in set(sizes_lst):
+            if len(counter) == 1:
+                counter.clear()
+            elif sizes_lst.count(itm) == 1:
+                counter.pop(sizes_lst.index(itm))
+        #корректирую результирующий словарь
+        if len(counter) == 0:
+            #result[k].clear()
+            del result[k]
+        elif len(counter) != len(result[k]):
+            result[k] = list(map(lambda x: x[1], counter))
+    return result
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     smbl = symbol()
-    sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/media/me/data/doc-i/', '.jpg']
+    sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/home/me/PycharmProjects/EqualFilesNameHash/samples/',
+                '.txt']
     # получаю список путей файлов
     file_list_dir = mk_file_list()
     name_list = []  # только имена файлов
@@ -64,5 +88,16 @@ if __name__ == '__main__':
     unic_name_list = list(set(name_list))
     # получить словарь: ключ - имя файла, и полные пути до файлов с одинаковыми именами
     result = mk_dict_equal_names(unic_name_list, name_list, file_list_dir)
-
     print(*result)
+    # получить словарь: ключ - имя файла, и полные пути до файлов с одинаковыми именами и размерами
+    result = mk_dict_equal_sizes(result)
+    print(*result)
+
+
+    # cntr_dict=dict()
+    # cntr_dict.update(counter)
+
+    #print(counter)
+    #print(sizes_lst)
+    # print(sorted(result[keys[0]], key=os.path.getsize))
+    # print(type(result[keys[0]]))
