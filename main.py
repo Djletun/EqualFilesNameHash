@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import glob
+# import glob
 import sys
 import os
 from hashlib import md5
@@ -21,7 +21,13 @@ def mk_file_list():
         if target_path[-1] != smbl:
             target_path += smbl  # добавляем в конец пути к директории слеш - будет искать во всех подпапках
         # print(target_path + '**' + smbl + '*' + file_types)
-        file_list_dir.extend(glob.glob(target_path + '**' + smbl + '*' + file_types, recursive=True))
+        # file_list_dir.extend(glob.glob(target_path + '**' + smbl + '*' + file_types, recursive=True))
+        # закоментил glob.glob - не всегда правильно определяет имена, если много точек и имя папки совпадает с именем файла внутри
+        for root, dirs, files in os.walk(target_path):
+            for file in files:
+                if (file.endswith(file_types)):
+                    file_list_dir.append(os.path.join(root, file))
+
     # print(file_list_dir)
     set_fl_lst_dr = set(file_list_dir)  # исключаю повторы путей файлов
     return list(set_fl_lst_dr)
@@ -118,8 +124,8 @@ def mk_dict_equal_hashes(result):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     smbl = symbol()
-    sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/media/me/win10/MY/',
-                '.*']
+    sys.argv = ['~/PycharmProjects/EqualFilesNameHash/main.py', '/media/me/data/doc-i/',
+                '']
     # sys.argv = ['F:\home\me\PycharmProjects\EqualFilesNameHash\main.py', 'D:\doc-i\работа', '.*']
     # получаю список путей файлов
     file_list_dir = mk_file_list()
